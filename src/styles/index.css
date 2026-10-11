@@ -1,0 +1,1332 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   Design tokens
+   Space-inspired palette: a near-black void, deep space blue surfaces,
+   electric blue / cyan / violet light, restrained accretion-disk gold.
+   ========================================================================== */
+@theme {
+  --color-void: #03050b;
+  --color-deep: #070d1a;
+  --color-deeper: #05091233;
+  --color-ink: #f3f6ff;
+  --color-muted: #a8b4d0;
+  --color-mist: #c3cee8;
+  --color-faint: #7c88a8;
+  --color-line: #16223c;
+
+  --color-plasma: #4da6ff;
+  --color-plasma-soft: #8cc8ff;
+  --color-cyan: #22d3ee;
+  --color-violet: #8b5cf6;
+  --color-gold: #f2c46b;
+  --color-gold-soft: #ffe9bc;
+
+  --font-display: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --font-sans: 'DM Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
+
+  --shadow-glow-sm: 0 0 12px rgba(77, 166, 255, 0.22);
+  --shadow-glow: 0 0 32px rgba(77, 166, 255, 0.28);
+  --shadow-glow-lg: 0 0 64px rgba(77, 166, 255, 0.35);
+  --shadow-card: 0 18px 48px -24px rgba(0, 0, 0, 0.9);
+
+  --radius-xl2: 1.25rem;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --z-bg: 0;
+  --z-content: 10;
+  --z-overlay: 30;
+  --z-header: 50;
+  --z-drawer: 60;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html,
+  body {
+    max-width: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-void);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.65;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: clamp(2.4rem, 6vw, 4.35rem);
+  }
+
+  h2 {
+    font-size: clamp(1.85rem, 3.9vw, 2.85rem);
+  }
+
+  h3 {
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+  }
+
+  p {
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img,
+  svg,
+  canvas {
+    display: block;
+    max-width: 100%;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: rgba(34, 211, 238, 0.3);
+    color: #ffffff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #05080f;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #1d3a63, #2a2a5e);
+    border-radius: 99px;
+    border: 2px solid #05080f;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #2c558f, #3d3d85);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   Layout helpers
+   ========================================================================== */
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .shell {
+      padding-inline: 2rem;
+    }
+  }
+
+  .section {
+    position: relative;
+    padding-block: clamp(4.5rem, 10vw, 7.5rem);
+    scroll-margin-top: 88px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-cyan);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Glass surfaces
+   * ------------------------------------------------------------------ */
+  .glass {
+    position: relative;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(140, 180, 255, 0.12);
+    background:
+      linear-gradient(150deg, rgba(15, 24, 46, 0.91) 0%, rgba(7, 12, 24, 0.85) 55%, rgba(5, 9, 18, 0.89) 100%);
+    backdrop-filter: blur(16px) saturate(130%);
+    -webkit-backdrop-filter: blur(16px) saturate(130%);
+    box-shadow:
+      var(--shadow-card),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-soft {
+    border-radius: 1rem;
+    border: 1px solid rgba(140, 180, 255, 0.1);
+    background: linear-gradient(160deg, rgba(13, 22, 42, 0.6), rgba(6, 11, 22, 0.55));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Gradient hairline that fades in on hover — used on cards and links. */
+  .edge-glow::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(77, 166, 255, 0.7), rgba(34, 211, 238, 0.35) 40%, rgba(139, 92, 246, 0.55));
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 260ms var(--ease-out-soft);
+    pointer-events: none;
+  }
+
+  .edge-glow:hover::after,
+  .edge-glow:focus-within::after {
+    opacity: 1;
+  }
+
+  .lift {
+    transition:
+      transform 280ms var(--ease-out-soft),
+      box-shadow 280ms var(--ease-out-soft),
+      border-color 280ms var(--ease-out-soft);
+  }
+
+  .lift:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      var(--shadow-card),
+      0 0 40px -14px rgba(77, 166, 255, 0.45);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Buttons
+   * ------------------------------------------------------------------ */
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 44px;
+    padding: 0.7rem 1.35rem;
+    border-radius: 0.85rem;
+    border: 1px solid transparent;
+    font-size: 0.94rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    transition:
+      transform 180ms var(--ease-out-soft),
+      box-shadow 220ms var(--ease-out-soft),
+      background-color 220ms var(--ease-out-soft),
+      border-color 220ms var(--ease-out-soft),
+      color 220ms var(--ease-out-soft);
+  }
+
+  .btn:active {
+    transform: translateY(1px) scale(0.99);
+  }
+
+  .btn:disabled,
+  .btn[aria-disabled='true'] {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-primary {
+    color: #04101f;
+    background: linear-gradient(120deg, var(--color-plasma-soft) 0%, #7fd8f5 45%, var(--color-cyan) 100%);
+    box-shadow:
+      0 10px 30px -12px rgba(34, 211, 238, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    box-shadow:
+      0 14px 38px -12px rgba(34, 211, 238, 0.75),
+      inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    color: var(--color-ink);
+    border-color: rgba(140, 180, 255, 0.22);
+    background: rgba(12, 20, 38, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .btn-ghost:hover:not(:disabled) {
+    border-color: rgba(77, 166, 255, 0.55);
+    background: rgba(18, 30, 56, 0.7);
+    transform: translateY(-2px);
+    box-shadow: 0 0 26px -10px rgba(77, 166, 255, 0.6);
+  }
+
+  .btn-gold {
+    color: #241703;
+    background: linear-gradient(120deg, var(--color-gold-soft) 0%, var(--color-gold) 70%);
+    box-shadow:
+      0 10px 30px -14px rgba(242, 196, 107, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .btn-gold:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow:
+      0 14px 40px -14px rgba(242, 196, 107, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  .btn-sm {
+    min-height: 40px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 0.75rem;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Text + decorative accents
+   * ------------------------------------------------------------------ */
+  .text-gradient {
+    background: linear-gradient(105deg, #ffffff 0%, var(--color-plasma-soft) 45%, var(--color-cyan) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(105deg, var(--color-gold-soft), var(--color-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hairline {
+    height: 1px;
+    border: 0;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(77, 166, 255, 0.45) 20%,
+        rgba(139, 92, 246, 0.45) 60%,
+        transparent);
+  }
+
+  .typewriter-caret {
+    display: inline-block;
+    width: 2px;
+    height: 1.05em;
+    margin-left: 0.16em;
+    transform: translateY(0.08em);
+    background: linear-gradient(180deg, var(--color-cyan), var(--color-plasma));
+    animation: caret-blink 1.05s steps(1, end) infinite;
+  }
+
+  @keyframes caret-blink {
+
+    0%,
+    48% {
+      opacity: 1;
+    }
+
+    50%,
+    100% {
+      opacity: 0.05;
+    }
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid rgba(140, 180, 255, 0.18);
+    background: rgba(12, 22, 42, 0.65);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--color-muted);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Forms
+   * ------------------------------------------------------------------ */
+  .field {
+    display: block;
+    width: 100%;
+    min-height: 46px;
+    padding: 0.7rem 0.9rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(140, 180, 255, 0.18);
+    background: rgba(6, 12, 24, 0.72);
+    color: var(--color-ink);
+    transition: border-color 180ms var(--ease-out-soft), box-shadow 180ms var(--ease-out-soft);
+  }
+
+  .field::placeholder {
+    color: rgba(124, 136, 168, 0.75);
+  }
+
+  .field:focus {
+    outline: none;
+    border-color: rgba(34, 211, 238, 0.65);
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.16);
+  }
+
+  .field[aria-invalid='true'] {
+    border-color: rgba(248, 113, 113, 0.7);
+    box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.14);
+  }
+
+  .label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: var(--color-muted);
+  }
+
+  .field-error {
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: #fca5a5;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Booking calendar and time slots
+   * ------------------------------------------------------------------ */
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+
+  .cal-day {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15rem;
+    min-height: 46px;
+    border-radius: 0.7rem;
+    border: 1px solid rgba(140, 180, 255, 0.12);
+    background: rgba(10, 18, 34, 0.55);
+    color: var(--color-ink);
+    font-size: 0.88rem;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition:
+      border-color 180ms var(--ease-out-soft),
+      background-color 180ms var(--ease-out-soft),
+      box-shadow 220ms var(--ease-out-soft);
+  }
+
+  .cal-day:hover:not(:disabled) {
+    border-color: rgba(77, 166, 255, 0.5);
+    background: rgba(16, 27, 50, 0.75);
+  }
+
+  .cal-day:focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 2px;
+  }
+
+  .cal-day:disabled {
+    opacity: 0.32;
+    cursor: not-allowed;
+    background: rgba(8, 14, 28, 0.35);
+  }
+
+  .cal-day.is-today {
+    border-color: rgba(34, 211, 238, 0.55);
+  }
+
+  .cal-day.is-selected {
+    background: linear-gradient(140deg, rgba(34, 211, 238, 0.24), rgba(77, 166, 255, 0.18));
+    border-color: rgba(34, 211, 238, 0.85);
+    box-shadow: 0 0 26px -10px rgba(34, 211, 238, 0.85);
+  }
+
+  .cal-day__dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-cyan);
+    box-shadow: 0 0 6px rgba(34, 211, 238, 0.9);
+  }
+
+  .cal-day__dot--empty {
+    background: rgba(124, 136, 168, 0.5);
+    box-shadow: none;
+  }
+
+  .slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.45rem 0.5rem;
+    border-radius: 0.7rem;
+    border: 1px solid rgba(140, 180, 255, 0.18);
+    background: rgba(10, 18, 34, 0.6);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+    color: var(--color-ink);
+    cursor: pointer;
+    transition:
+      border-color 180ms var(--ease-out-soft),
+      background-color 180ms var(--ease-out-soft),
+      box-shadow 220ms var(--ease-out-soft);
+  }
+
+  .slot:hover:not(:disabled) {
+    border-color: rgba(77, 166, 255, 0.55);
+    background: rgba(18, 30, 56, 0.75);
+  }
+
+  .slot:focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 2px;
+  }
+
+  .slot.is-selected {
+    background: linear-gradient(140deg, rgba(34, 211, 238, 0.26), rgba(77, 166, 255, 0.2));
+    border-color: rgba(34, 211, 238, 0.9);
+    box-shadow: 0 0 26px -10px rgba(34, 211, 238, 0.9);
+    color: #eafcff;
+  }
+
+  .slot--booked {
+    text-decoration: line-through;
+    opacity: 0.38;
+    cursor: not-allowed;
+  }
+
+  .slot--past {
+    opacity: 0.34;
+    cursor: not-allowed;
+    border-style: dashed;
+  }
+
+  .slot:disabled {
+    pointer-events: none;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Booking calendar
+   * ------------------------------------------------------------------ */
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+
+  .cal-dow {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .cal-day {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.22rem;
+    min-height: 44px;
+    border-radius: 0.7rem;
+    border: 1px solid rgba(140, 180, 255, 0.12);
+    background: rgba(10, 18, 34, 0.55);
+    color: var(--color-ink);
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition:
+      transform 180ms var(--ease-out-soft),
+      border-color 200ms var(--ease-out-soft),
+      background-color 200ms var(--ease-out-soft),
+      box-shadow 220ms var(--ease-out-soft);
+  }
+
+  .cal-day:hover:not(:disabled) {
+    border-color: rgba(77, 166, 255, 0.5);
+    background: rgba(18, 30, 56, 0.75);
+    transform: translateY(-1px);
+  }
+
+  .cal-day:focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 2px;
+  }
+
+  .cal-day:disabled {
+    opacity: 0.32;
+    cursor: not-allowed;
+    background: rgba(8, 14, 28, 0.4);
+  }
+
+  .cal-day.is-today {
+    border-color: rgba(34, 211, 238, 0.5);
+  }
+
+  .cal-day.is-selected {
+    background: linear-gradient(140deg, rgba(34, 211, 238, 0.24), rgba(77, 166, 255, 0.2));
+    border-color: rgba(34, 211, 238, 0.8);
+    box-shadow: 0 0 24px -10px rgba(34, 211, 238, 0.85);
+  }
+
+  .cal-day__dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-cyan);
+  }
+
+  .cal-day__dot--none {
+    background: rgba(124, 136, 168, 0.55);
+  }
+
+  /* Booking time slots -------------------------------------------------- */
+  .slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.45rem 0.6rem;
+    border-radius: 0.7rem;
+    border: 1px solid rgba(140, 180, 255, 0.18);
+    background: rgba(10, 18, 34, 0.6);
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition:
+      transform 180ms var(--ease-out-soft),
+      border-color 200ms var(--ease-out-soft),
+      background-color 200ms var(--ease-out-soft),
+      box-shadow 220ms var(--ease-out-soft);
+  }
+
+  .slot:hover:not(:disabled) {
+    border-color: rgba(77, 166, 255, 0.55);
+    background: rgba(18, 30, 56, 0.78);
+    transform: translateY(-1px);
+  }
+
+  .slot:focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 2px;
+  }
+
+  .slot.is-selected {
+    color: #eafcff;
+    background: linear-gradient(140deg, rgba(34, 211, 238, 0.26), rgba(77, 166, 255, 0.2));
+    border-color: rgba(34, 211, 238, 0.85);
+    box-shadow: 0 0 26px -10px rgba(34, 211, 238, 0.9);
+  }
+
+  .slot:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  .slot--booked {
+    text-decoration: line-through;
+    border-style: dashed;
+  }
+
+  .slot--past {
+    border-color: rgba(124, 136, 168, 0.16);
+  }
+
+  /* Booking stepper ----------------------------------------------------- */
+  .step-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid rgba(140, 180, 255, 0.16);
+    background: rgba(10, 18, 34, 0.55);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    transition: border-color 200ms var(--ease-out-soft), color 200ms var(--ease-out-soft);
+  }
+
+  .step-pill[aria-current='step'] {
+    border-color: rgba(34, 211, 238, 0.7);
+    color: var(--color-cyan);
+    box-shadow: 0 0 22px -12px rgba(34, 211, 238, 0.9);
+  }
+
+  .step-pill.is-done {
+    color: rgba(167, 243, 208, 0.95);
+    border-color: rgba(52, 211, 153, 0.35);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Reveal-on-scroll (progressive enhancement: visible by default)
+   * ------------------------------------------------------------------ */
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  html.js-reveal .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 620ms var(--ease-out-soft),
+      transform 620ms var(--ease-out-soft);
+  }
+
+  html.js-reveal .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.js-reveal .reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Orbit + node decoration
+   * ------------------------------------------------------------------ */
+  .orbit-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px dashed rgba(140, 180, 255, 0.12);
+    pointer-events: none;
+  }
+
+  .node-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-cyan);
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.9);
+    pointer-events: none;
+  }
+
+  /* Hero decorations ---------------------------------------------------- */
+  .orbit-spin {
+    animation: orbit-spin 60s linear infinite;
+  }
+
+  @keyframes orbit-spin {
+    from {
+      rotate: 0deg;
+    }
+
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  .node-dot--pulse {
+    animation: node-pulse 4.6s var(--ease-out-soft) infinite;
+  }
+
+  @keyframes node-pulse {
+
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: scale(0.85);
+    }
+
+    45% {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+  }
+
+  .scroll-cue {
+    animation: scroll-cue 2.4s var(--ease-out-soft) infinite;
+  }
+
+  @keyframes scroll-cue {
+
+    0%,
+    100% {
+      transform: translateY(-1px);
+      opacity: 0.65;
+    }
+
+    50% {
+      transform: translateY(3px);
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+
+    .orbit-spin,
+    .node-dot--pulse,
+    .scroll-cue {
+      animation: none;
+    }
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -100px;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    border-radius: 0.6rem;
+    background: var(--color-cyan);
+    color: #04101f;
+    font-weight: 600;
+    transition: top 200ms ease;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Space environment layers
+   * ------------------------------------------------------------------ */
+  .space-layer {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-bg);
+    pointer-events: none;
+  }
+
+  .space-nebula {
+    background:
+      radial-gradient(120% 90% at 78% 30%, rgba(38, 30, 84, 0.55) 0%, transparent 58%),
+      radial-gradient(90% 70% at 12% 78%, rgba(9, 28, 56, 0.6) 0%, transparent 62%),
+      radial-gradient(60% 50% at 62% 84%, rgba(74, 48, 30, 0.24) 0%, transparent 70%),
+      linear-gradient(180deg, #03050b 0%, #050a13 45%, #03050b 100%);
+  }
+
+  /* Vertical density fade so the environment never crowds the footer. */
+  .space-nebula::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(3, 5, 11, 0.75) 100%);
+  }
+
+  /* Readability wash that keeps hero text crisp over the black hole. */
+  .space-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(100deg,
+        rgba(3, 5, 11, 0.95) 0%,
+        rgba(3, 5, 11, 0.82) 26%,
+        rgba(3, 5, 11, 0.42) 50%,
+        rgba(3, 5, 11, 0) 76%);
+  }
+
+  @media (max-width: 767px) {
+    .space-scrim {
+      background: linear-gradient(180deg,
+          rgba(3, 5, 11, 0.3) 0%,
+          rgba(3, 5, 11, 0.62) 34%,
+          rgba(3, 5, 11, 0.92) 62%,
+          var(--color-void) 90%);
+    }
+  }
+
+  .neural-border {
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .cursor-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 620px;
+    height: 620px;
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    background:
+      radial-gradient(closest-side, rgba(77, 166, 255, 0.14) 0%, rgba(77, 166, 255, 0.05) 42%, transparent 72%),
+      radial-gradient(closest-side at 62% 38%, rgba(139, 92, 246, 0.1) 0%, transparent 66%);
+    transition: opacity 420ms var(--ease-out-soft);
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor-glow {
+      display: none;
+    }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Header + navigation
+   * ------------------------------------------------------------------ */
+  .site-header {
+    --header-h: 62px;
+    height: var(--header-h);
+  }
+
+  @media (min-width: 768px) {
+    .site-header {
+      --header-h: 72px;
+    }
+  }
+
+  /* The blur lives on an inner layer: backdrop-filter on the header itself
+     would turn it into a containing block for the fixed drawer. */
+  .header-surface {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(3, 6, 13, 0.84), rgba(3, 6, 13, 0.58));
+    border-bottom: 1px solid rgba(140, 180, 255, 0.08);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    transition:
+      background 320ms var(--ease-out-soft),
+      border-color 320ms var(--ease-out-soft),
+      box-shadow 320ms var(--ease-out-soft);
+  }
+
+  .site-header.is-scrolled .header-surface {
+    background: linear-gradient(180deg, rgba(3, 6, 14, 0.93), rgba(5, 9, 18, 0.82));
+    border-bottom-color: rgba(140, 180, 255, 0.14);
+    box-shadow: 0 18px 44px -34px rgba(0, 0, 0, 1);
+  }
+
+  .nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.72rem;
+    border-radius: 0.6rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-muted);
+    transition:
+      color 200ms var(--ease-out-soft),
+      background-color 200ms var(--ease-out-soft);
+  }
+
+  .nav-link:hover {
+    color: var(--color-ink);
+    background: rgba(77, 166, 255, 0.08);
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 1px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    transform: translateX(-50%) scale(0);
+    background: var(--color-cyan);
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.95);
+    transition: transform 280ms var(--ease-out-soft);
+  }
+
+  .nav-link.is-active {
+    color: var(--color-ink);
+  }
+
+  .nav-link.is-active::after {
+    transform: translateX(-50%) scale(1);
+  }
+
+  .header-progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    background: linear-gradient(90deg, var(--color-plasma), var(--color-cyan) 55%, var(--color-violet));
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  .brand-mark {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid rgba(140, 180, 255, 0.22);
+    background:
+      radial-gradient(circle at 30% 25%, rgba(34, 211, 238, 0.35), transparent 60%),
+      linear-gradient(140deg, rgba(16, 30, 58, 0.95), rgba(6, 11, 24, 0.95));
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--color-ink);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .brand-mark::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 15px;
+    border: 1px solid rgba(77, 166, 255, 0.28);
+    opacity: 0;
+    transition: opacity 300ms var(--ease-out-soft);
+  }
+
+  a:hover>.brand-mark::after,
+  a:focus-visible>.brand-mark::after {
+    opacity: 1;
+  }
+
+  /* Drawer ------------------------------------------------------------- */
+  .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-drawer);
+    background: rgba(2, 4, 9, 0.7);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    animation: drawer-fade 240ms var(--ease-out-soft);
+  }
+
+  .drawer-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(360px, 88vw);
+    z-index: calc(var(--z-drawer) + 1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1.1rem 1.1rem 1.6rem;
+    background: linear-gradient(160deg, rgba(8, 14, 28, 0.98), rgba(4, 7, 15, 0.98));
+    border-left: 1px solid rgba(140, 180, 255, 0.14);
+    box-shadow: -24px 0 60px -30px rgba(0, 0, 0, 1);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    animation: drawer-slide 300ms var(--ease-out-soft);
+  }
+
+  .drawer-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px;
+    padding: 0.6rem 0.9rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    font-size: 0.98rem;
+    font-weight: 500;
+    color: var(--color-muted);
+    transition:
+      color 200ms var(--ease-out-soft),
+      background-color 200ms var(--ease-out-soft),
+      border-color 200ms var(--ease-out-soft);
+  }
+
+  .drawer-link:hover {
+    color: var(--color-ink);
+    background: rgba(77, 166, 255, 0.08);
+  }
+
+  .drawer-link.is-active {
+    color: var(--color-ink);
+    border-color: rgba(77, 166, 255, 0.28);
+    background: rgba(77, 166, 255, 0.1);
+  }
+
+  @keyframes drawer-fade {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes drawer-slide {
+    from {
+      transform: translateX(100%);
+    }
+
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+
+    .drawer-backdrop,
+    .drawer-panel {
+      animation: none;
+    }
+  }
+}
+
+/* ==========================================================================
+   Solar system — time-travel box (home page, between contact and footer)
+   ========================================================================== */
+
+.solar-box {
+  --warp: 0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(140, 180, 255, 0.14);
+  background:
+    radial-gradient(115% 85% at 50% 36%, rgba(17, 30, 60, 0.92) 0%, rgba(6, 10, 22, 0.96) 58%, #03050b 100%);
+  box-shadow:
+    var(--shadow-card),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  cursor: crosshair;
+}
+
+/* Warp glow — intensifies with --warp, which the canvas sets every frame. */
+.solar-box::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgb(34 211 238 / calc(var(--warp) * 0.38)),
+    inset 0 0 70px rgb(34 211 238 / calc(var(--warp) * 0.13));
+}
+
+.solar-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.solar-hud {
+  position: absolute;
+  top: 14px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(140, 180, 255, 0.16);
+  background: rgba(4, 8, 18, 0.62);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 0.72rem;
+  color: var(--color-mist);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.solar-hud--hint {
+  left: 14px;
+  transition: opacity 0.6s ease;
+}
+
+.solar-hud--speed {
+  right: 14px;
+}
+
+.solar-box.is-engaged .solar-hud--hint {
+  opacity: 0;
+}
+
+.solar-speed-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22d3ee;
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.8);
+  opacity: calc(0.35 + var(--warp) * 0.65);
+  transform: scale(calc(0.8 + var(--warp) * 0.55));
+}
+
+/* ==========================================================================
+   Rocket cursor — the pointer becomes a small rocket (fine pointers only)
+   ========================================================================== */
+
+/* The native cursor is only hidden while the rocket is on screen. This class
+   is set on <html> by RocketCursor and must stay distinct from the rocket
+   element's own `.rocket-cursor` class — the rocket styles would otherwise
+   apply to the whole document. */
+html.has-rocket-cursor,
+html.has-rocket-cursor * {
+  cursor: none !important;
+}
+
+.rocket-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 70; /* above the drawer, below nothing interactive */
+  width: 34px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(-120px, -120px, 0);
+  transform-origin: 17px 2px; /* the nose — the exact click hotspot */
+  transition: opacity 0.25s ease;
+  will-change: transform;
+}
+
+.rocket-cursor.is-visible {
+  opacity: 1;
+}
+
+.rocket-flame {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+}
+
+/* ==========================================================================
+   Print — used by the dedicated /cv page
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 14mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  .no-print,
+  .site-header,
+  .space-layer,
+  .space-scrim,
+  .neural-border,
+  .site-footer {
+    display: none !important;
+  }
+
+  .print-doc {
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .print-doc a {
+    color: #1d4ed8 !important;
+    text-decoration: none;
+  }
+
+  .print-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-doc h1,
+  .print-doc h2,
+  .print-doc h3 {
+    color: #0f172a !important;
+  }
+}
